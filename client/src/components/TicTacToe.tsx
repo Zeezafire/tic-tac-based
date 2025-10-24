@@ -221,6 +221,8 @@ export default function TicTacToe() {
                 style={
                   cell === "X"
                     ? { textShadow: "0 0 20px rgba(59, 130, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.5)" }
+                    : cell === "O"
+                    ? { textShadow: "0 0 20px rgba(96, 165, 250, 0.8), 0 0 40px rgba(96, 165, 250, 0.5)" }
                     : {}
                 }
                 className={`
@@ -242,7 +244,7 @@ export default function TicTacToe() {
                       : "border-white/30 bg-white/5"
                   }
                   ${cell === "X" ? "text-white" : ""}
-                  ${cell === "O" ? "text-[#0a1628] [text-shadow:0_0_0_2px_rgba(255,255,255,0.3)]" : ""}
+                  ${cell === "O" ? "text-blue-400" : ""}
                 `}
               >
                 {cell && (
