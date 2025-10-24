@@ -200,7 +200,7 @@ export default function TicTacToe() {
           </Card>
         </div>
 
-        <Card className="p-6 md:p-8 shadow-xl border-2">
+        <Card className="p-6 md:p-8 border-2 border-white/20 bg-white/10 backdrop-blur-md shadow-[0_8px_32px_0_rgba(31,38,135,0.37)]">
           <div className="grid grid-cols-3 gap-3 md:gap-4">
             {board.map((cell, index) => (
               <button
@@ -208,6 +208,11 @@ export default function TicTacToe() {
                 onClick={() => handleCellClick(index)}
                 disabled={!!cell || !!winner}
                 data-testid={`button-cell-${index}`}
+                style={
+                  cell === "X"
+                    ? { textShadow: "0 0 20px rgba(59, 130, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.5)" }
+                    : {}
+                }
                 className={`
                   aspect-square rounded-xl border-2 
                   flex items-center justify-center
@@ -223,11 +228,11 @@ export default function TicTacToe() {
                   }
                   ${
                     winningLine?.includes(index)
-                      ? "bg-primary/10 border-primary scale-105 shadow-lg"
-                      : "border-border bg-card"
+                      ? "bg-primary/20 border-primary scale-105 shadow-lg"
+                      : "border-white/30 bg-white/5"
                   }
-                  ${cell === "X" ? "text-primary" : ""}
-                  ${cell === "O" ? "text-destructive" : ""}
+                  ${cell === "X" ? "text-white" : ""}
+                  ${cell === "O" ? "text-[#0a1628] [text-shadow:0_0_0_2px_rgba(255,255,255,0.3)]" : ""}
                 `}
               >
                 {cell && (
