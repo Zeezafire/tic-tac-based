@@ -200,7 +200,7 @@ export default function TicTacToe() {
           </Card>
         </div>
 
-        <Card className="p-6 md:p-8 shadow-xl">
+        <Card className="p-6 md:p-8 shadow-xl border-2">
           <div className="grid grid-cols-3 gap-3 md:gap-4">
             {board.map((cell, index) => (
               <button
