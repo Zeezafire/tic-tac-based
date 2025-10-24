@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { RotateCcw } from "lucide-react";
@@ -27,7 +27,11 @@ export default function TicTacToe() {
   const [currentPlayer, setCurrentPlayer] = useState<Player>("X");
   const [winner, setWinner] = useState<Player | "Draw" | null>(null);
   const [winningLine, setWinningLine] = useState<number[] | null>(null);
-  const [scores, setScores] = useState({ X: 0, O: 0 });
+  const [scores, setScores] = useState({ player: 0, computer: 0 });
+  const [isComputerThinking, setIsComputerThinking] = useState(false);
+
+  const PLAYER = "X";
+  const COMPUTER = "O";
 
   const checkWinner = (board: Board): WinningLine | null => {
     for (const combo of WINNING_COMBINATIONS) {
@@ -39,37 +43,131 @@ export default function TicTacToe() {
     return null;
   };
 
+  const minimax = (board: Board, depth: number, isMaximizing: boolean): number => {
+    const winResult = checkWinner(board);
+    
+    if (winResult) {
+      const winnerPlayer = board[winResult.indices[0]];
+      return winnerPlayer === COMPUTER ? 10 - depth : depth - 10;
+    }
+    
+    if (board.every((cell) => cell !== null)) {
+      return 0;
+    }
+
+    if (isMaximizing) {
+      let bestScore = -Infinity;
+      for (let i = 0; i < 9; i++) {
+        if (board[i] === null) {
+          board[i] = COMPUTER;
+          const score = minimax(board, depth + 1, false);
+          board[i] = null;
+          bestScore = Math.max(score, bestScore);
+        }
+      }
+      return bestScore;
+    } else {
+      let bestScore = Infinity;
+      for (let i = 0; i < 9; i++) {
+        if (board[i] === null) {
+          board[i] = PLAYER;
+          const score = minimax(board, depth + 1, true);
+          board[i] = null;
+          bestScore = Math.min(score, bestScore);
+        }
+      }
+      return bestScore;
+    }
+  };
+
+  const getBestMove = (board: Board): number => {
+    let bestScore = -Infinity;
+    let bestMove = -1;
+
+    for (let i = 0; i < 9; i++) {
+      if (board[i] === null) {
+        board[i] = COMPUTER;
+        const score = minimax(board, 0, false);
+        board[i] = null;
+        
+        if (score > bestScore) {
+          bestScore = score;
+          bestMove = i;
+        }
+      }
+    }
+
+    return bestMove;
+  };
+
+  const makeComputerMove = (currentBoard: Board) => {
+    setIsComputerThinking(true);
+    
+    setTimeout(() => {
+      const bestMove = getBestMove([...currentBoard]);
+      
+      if (bestMove !== -1) {
+        const newBoard = [...currentBoard];
+        newBoard[bestMove] = COMPUTER;
+        setBoard(newBoard);
+
+        const winResult = checkWinner(newBoard);
+        if (winResult) {
+          setWinner(COMPUTER);
+          setWinningLine(winResult.indices);
+          setScores((prev) => ({
+            ...prev,
+            computer: prev.computer + 1,
+          }));
+        } else if (newBoard.every((cell) => cell !== null)) {
+          setWinner("Draw");
+        } else {
+          setCurrentPlayer(PLAYER);
+        }
+      }
+      
+      setIsComputerThinking(false);
+    }, 500);
+  };
+
+  useEffect(() => {
+    if (currentPlayer === COMPUTER && !winner && !isComputerThinking) {
+      makeComputerMove(board);
+    }
+  }, [currentPlayer, winner]);
+
   const handleCellClick = (index: number) => {
-    if (board[index] || winner) return;
+    if (board[index] || winner || currentPlayer !== PLAYER || isComputerThinking) return;
 
     const newBoard = [...board];
-    newBoard[index] = currentPlayer;
+    newBoard[index] = PLAYER;
     setBoard(newBoard);
 
     const winResult = checkWinner(newBoard);
     if (winResult) {
-      setWinner(currentPlayer);
+      setWinner(PLAYER);
       setWinningLine(winResult.indices);
       setScores((prev) => ({
         ...prev,
-        [currentPlayer]: prev[currentPlayer] + 1,
+        player: prev.player + 1,
       }));
     } else if (newBoard.every((cell) => cell !== null)) {
       setWinner("Draw");
     } else {
-      setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
+      setCurrentPlayer(COMPUTER);
     }
   };
 
   const resetGame = () => {
     setBoard(Array(9).fill(null));
-    setCurrentPlayer("X");
+    setCurrentPlayer(PLAYER);
     setWinner(null);
     setWinningLine(null);
+    setIsComputerThinking(false);
   };
 
   const resetScores = () => {
-    setScores({ X: 0, O: 0 });
+    setScores({ player: 0, computer: 0 });
     resetGame();
   };
 
@@ -80,23 +178,24 @@ export default function TicTacToe() {
           <h1 className="text-3xl md:text-4xl font-bold" data-testid="text-title">
             Tic-Tac-Toe
           </h1>
+          <p className="text-muted-foreground">Play against the Computer</p>
         </div>
 
         <div className="flex items-center justify-center gap-4">
           <Card className="flex-1 p-3 text-center">
             <div className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
-              Player X
+              You (X)
             </div>
-            <div className="text-2xl font-bold" data-testid="text-score-x">
-              {scores.X}
+            <div className="text-2xl font-bold" data-testid="text-score-player">
+              {scores.player}
             </div>
           </Card>
           <Card className="flex-1 p-3 text-center">
             <div className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
-              Player O
+              Computer (O)
             </div>
-            <div className="text-2xl font-bold" data-testid="text-score-o">
-              {scores.O}
+            <div className="text-2xl font-bold" data-testid="text-score-computer">
+              {scores.computer}
             </div>
           </Card>
         </div>
@@ -148,10 +247,16 @@ export default function TicTacToe() {
           >
             {winner === "Draw" ? (
               <span className="text-muted-foreground">It's a Draw!</span>
-            ) : winner ? (
-              <span className="text-primary">Player {winner} Wins!</span>
+            ) : winner === PLAYER ? (
+              <span className="text-primary">You Win!</span>
+            ) : winner === COMPUTER ? (
+              <span className="text-destructive">Computer Wins!</span>
+            ) : isComputerThinking ? (
+              <span className="text-muted-foreground">Computer is thinking...</span>
+            ) : currentPlayer === PLAYER ? (
+              <span>Your Turn</span>
             ) : (
-              <span>Player {currentPlayer}'s Turn</span>
+              <span className="text-muted-foreground">Computer's Turn</span>
             )}
           </div>
 
