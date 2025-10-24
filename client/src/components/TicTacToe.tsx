@@ -246,11 +246,11 @@ export default function TicTacToe() {
             data-testid="text-status"
           >
             {winner === "Draw" ? (
-              <span className="text-muted-foreground">It's a Draw!</span>
+              <span className="text-muted-foreground">Based minds think alike</span>
             ) : winner === PLAYER ? (
-              <span className="text-primary">You are based!</span>
+              <span className="text-primary">🏆 You are based!</span>
             ) : winner === COMPUTER ? (
-              <span className="text-destructive">You are not based enough!</span>
+              <span className="text-destructive">💀 You are not based enough!</span>
             ) : isComputerThinking ? (
               <span className="text-muted-foreground">Computer is thinking...</span>
             ) : currentPlayer === PLAYER ? (
