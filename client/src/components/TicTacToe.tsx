@@ -104,11 +104,21 @@ export default function TicTacToe() {
     setIsComputerThinking(true);
     
     setTimeout(() => {
-      const bestMove = getBestMove([...currentBoard]);
+      let move: number;
       
-      if (bestMove !== -1) {
+      // 40% chance to make a random move (easier difficulty)
+      if (Math.random() < 0.4) {
+        const availableMoves = currentBoard
+          .map((cell, index) => (cell === null ? index : -1))
+          .filter((index) => index !== -1);
+        move = availableMoves[Math.floor(Math.random() * availableMoves.length)];
+      } else {
+        move = getBestMove([...currentBoard]);
+      }
+      
+      if (move !== -1 && move !== undefined) {
         const newBoard = [...currentBoard];
-        newBoard[bestMove] = COMPUTER;
+        newBoard[move] = COMPUTER;
         setBoard(newBoard);
 
         const winResult = checkWinner(newBoard);
