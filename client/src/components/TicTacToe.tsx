@@ -248,9 +248,9 @@ export default function TicTacToe() {
             {winner === "Draw" ? (
               <span className="text-muted-foreground">It's a Draw!</span>
             ) : winner === PLAYER ? (
-              <span className="text-primary">You Win!</span>
+              <span className="text-primary">You are based!</span>
             ) : winner === COMPUTER ? (
-              <span className="text-destructive">Computer Wins!</span>
+              <span className="text-destructive">You are not based enough!</span>
             ) : isComputerThinking ? (
               <span className="text-muted-foreground">Computer is thinking...</span>
             ) : currentPlayer === PLAYER ? (
