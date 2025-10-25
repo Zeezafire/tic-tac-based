@@ -22,9 +22,11 @@
 8. Add the contract address to your `.env` file as `VITE_CONTRACT_ADDRESS`
 
 ## Contract Details
-- Game Fee: 0.1 ETH per game
+- Game Fee: $0.10 USD worth of ETH (dynamic pricing via frontend)
 - Network: Base Sepolia Testnet
 - Chain ID: 84532
+- The contract accepts any payment >= minPayment (default: 0.0001 ETH)
+- Frontend calculates the exact ETH amount based on current ETH/USD price
 
 ## After Deployment
 Update the contract address in `client/src/lib/web3.ts` with your deployed contract address.

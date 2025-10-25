@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { RotateCcw } from "lucide-react";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { parseEther } from "viem";
-import { GAME_CONTRACT_ADDRESS, GAME_CONTRACT_ABI } from "@/lib/web3";
+import { GAME_CONTRACT_ADDRESS, GAME_CONTRACT_ABI, calculateEthForUSD, getEthPriceUSD } from "@/lib/web3";
 import WalletConnect from "./WalletConnect";
 import { useToast } from "@/hooks/use-toast";
 
@@ -36,6 +36,8 @@ export default function TicTacToe() {
   const [isComputerThinking, setIsComputerThinking] = useState(false);
   const [gameActive, setGameActive] = useState(false);
   const [isPendingPayment, setIsPendingPayment] = useState(false);
+  const [ethAmount, setEthAmount] = useState<string>("0.00005");
+  const [ethPrice, setEthPrice] = useState<number>(2000);
 
   const { isConnected, address } = useAccount();
   const { toast } = useToast();
@@ -46,6 +48,16 @@ export default function TicTacToe() {
 
   const PLAYER = "X";
   const COMPUTER = "O";
+
+  useEffect(() => {
+    const fetchPrice = async () => {
+      const price = await getEthPriceUSD();
+      setEthPrice(price);
+      const amount = await calculateEthForUSD(0.1);
+      setEthAmount(amount);
+    };
+    fetchPrice();
+  }, []);
 
   const checkWinner = (board: Board): WinningLine | null => {
     for (const combo of WINNING_COMBINATIONS) {
@@ -218,12 +230,12 @@ export default function TicTacToe() {
         address: GAME_CONTRACT_ADDRESS,
         abi: GAME_CONTRACT_ABI,
         functionName: 'startGame',
-        value: parseEther('0.1'),
+        value: parseEther(ethAmount),
       });
       
       toast({
         title: "Transaction Sent",
-        description: "Please confirm the transaction in your wallet...",
+        description: `Paying $0.10 USD (${parseFloat(ethAmount).toFixed(6)} ETH)`,
       });
     } catch (error: any) {
       setIsPendingPayment(false);
@@ -257,7 +269,9 @@ export default function TicTacToe() {
             Tic-Tac-Toe
           </h1>
           <p className="text-muted-foreground">Play against the Computer</p>
-          <p className="text-sm text-muted-foreground">0.1 ETH per game on Base Sepolia</p>
+          <p className="text-sm text-muted-foreground">
+            $0.10 USD per game (~{parseFloat(ethAmount).toFixed(6)} ETH)
+          </p>
         </div>
 
         <WalletConnect />
@@ -284,8 +298,11 @@ export default function TicTacToe() {
         {!gameActive && !isPendingPayment && (
           <Card className="p-6 text-center border-2 border-white/20 bg-white/10 backdrop-blur-md">
             <h2 className="text-2xl font-bold mb-4">Start New Game</h2>
-            <p className="text-muted-foreground mb-6">
-              Pay 0.1 ETH to start playing on Base Sepolia testnet
+            <p className="text-muted-foreground mb-2">
+              Pay $0.10 USD to start playing on Base Sepolia testnet
+            </p>
+            <p className="text-sm text-muted-foreground/70 mb-6">
+              ~{parseFloat(ethAmount).toFixed(6)} ETH at ${ethPrice.toFixed(2)}/ETH
             </p>
             <Button
               onClick={startNewGame}
@@ -294,7 +311,7 @@ export default function TicTacToe() {
               className="w-full"
               data-testid="button-start-game"
             >
-              {isPending ? "Processing..." : "Pay & Start Game (0.1 ETH)"}
+              {isPending ? "Processing..." : `Pay & Start Game ($0.10)`}
             </Button>
           </Card>
         )}
