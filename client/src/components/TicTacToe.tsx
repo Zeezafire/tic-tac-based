@@ -38,6 +38,7 @@ export default function TicTacToe() {
   const [isPendingPayment, setIsPendingPayment] = useState(false);
   const [ethAmount, setEthAmount] = useState<string>("0.00005");
   const [ethPrice, setEthPrice] = useState<number>(2000);
+  const [lastWinner, setLastWinner] = useState<Player | null>(null);
 
   const { isConnected, address } = useAccount();
   const { toast } = useToast();
@@ -151,10 +152,12 @@ export default function TicTacToe() {
         if (winResult) {
           setWinner(COMPUTER);
           setWinningLine(winResult.indices);
+          setLastWinner(COMPUTER);
           setScores((prev) => ({
             ...prev,
             computer: prev.computer + 1,
           }));
+          setTimeout(() => setLastWinner(null), 2000);
         } else if (newBoard.every((cell) => cell !== null)) {
           setWinner("Draw");
         } else {
@@ -183,10 +186,12 @@ export default function TicTacToe() {
     if (winResult) {
       setWinner(PLAYER);
       setWinningLine(winResult.indices);
+      setLastWinner(PLAYER);
       setScores((prev) => ({
         ...prev,
         player: prev.player + 1,
       }));
+      setTimeout(() => setLastWinner(null), 2000);
     } else if (newBoard.every((cell) => cell !== null)) {
       setWinner("Draw");
     } else {
@@ -277,7 +282,7 @@ export default function TicTacToe() {
         <WalletConnect />
 
         <div className="flex items-center justify-center gap-4">
-          <Card className="flex-1 p-3 text-center">
+          <Card className={`flex-1 p-3 text-center glass-score-box ${lastWinner === PLAYER ? 'winner-glow' : ''}`}>
             <div className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
               You (X)
             </div>
@@ -285,7 +290,7 @@ export default function TicTacToe() {
               {scores.player}
             </div>
           </Card>
-          <Card className="flex-1 p-3 text-center">
+          <Card className={`flex-1 p-3 text-center glass-score-box ${lastWinner === COMPUTER ? 'winner-glow' : ''}`}>
             <div className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
               Computer (O)
             </div>

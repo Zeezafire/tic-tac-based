@@ -460,4 +460,56 @@
   .piece-animation {
     animation: pop-in 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
+
+  /* Glassmorphism Score Boxes */
+  .glass-score-box {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 
+      0 4px 6px rgba(0, 0, 0, 0.1),
+      0 0 20px rgba(59, 130, 246, 0.1),
+      inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .glass-score-box:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 
+      0 6px 12px rgba(0, 0, 0, 0.15),
+      0 0 30px rgba(59, 130, 246, 0.15),
+      inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  }
+
+  /* Winner Glow Animation */
+  @keyframes winner-pulse {
+    0% {
+      box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.1),
+        0 0 20px rgba(34, 197, 94, 0.3),
+        0 0 40px rgba(34, 197, 94, 0.2),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    }
+    50% {
+      box-shadow: 
+        0 6px 12px rgba(0, 0, 0, 0.15),
+        0 0 40px rgba(34, 197, 94, 0.6),
+        0 0 60px rgba(34, 197, 94, 0.4),
+        inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    }
+    100% {
+      box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.1),
+        0 0 20px rgba(34, 197, 94, 0.3),
+        0 0 40px rgba(34, 197, 94, 0.2),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .winner-glow {
+    background: rgba(34, 197, 94, 0.1) !important;
+    border: 1px solid rgba(34, 197, 94, 0.4) !important;
+    animation: winner-pulse 1s ease-in-out 2;
+  }
 }
