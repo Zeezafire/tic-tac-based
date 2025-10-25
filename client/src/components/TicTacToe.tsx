@@ -265,8 +265,8 @@ export default function TicTacToe() {
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
-          <h1 className="text-3xl md:text-4xl font-bold" data-testid="text-title">
-            Tic-Tac-Toe
+          <h1 className="text-3xl md:text-4xl font-bold neon-title" data-testid="text-title">
+            Tic Tac Based
           </h1>
           <p className="text-muted-foreground">Play against the Computer</p>
           <p className="text-xs text-muted-foreground/70">

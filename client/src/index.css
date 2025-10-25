@@ -405,4 +405,16 @@
     cursor: not-allowed;
     animation: none;
   }
+
+  /* Neon Title Glow Effect */
+  .neon-title {
+    color: #60a5fa;
+    text-shadow: 
+      0 0 10px rgba(96, 165, 250, 0.8),
+      0 0 20px rgba(96, 165, 250, 0.6),
+      0 0 30px rgba(96, 165, 250, 0.4),
+      0 0 40px rgba(59, 130, 246, 0.3),
+      0 0 70px rgba(59, 130, 246, 0.2);
+    animation: fade-in-up 0.8s ease-out;
+  }
 }
