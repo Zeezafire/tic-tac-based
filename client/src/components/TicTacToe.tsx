@@ -305,7 +305,7 @@ export default function TicTacToe() {
               onClick={startNewGame}
               disabled={!isConnected || isPending}
               size="lg"
-              className="w-full"
+              className="w-full glow-button text-white font-bold tracking-wide"
               data-testid="button-start-game"
             >
               {isPending ? "Processing..." : "Start Game"}
