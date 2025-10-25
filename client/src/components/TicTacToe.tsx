@@ -364,7 +364,7 @@ export default function TicTacToe() {
                     `}
                   >
                     {cell && (
-                      <span className="animate-in fade-in zoom-in duration-200">
+                      <span className="piece-animation">
                         {cell}
                       </span>
                     )}
