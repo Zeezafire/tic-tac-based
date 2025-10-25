@@ -269,8 +269,8 @@ export default function TicTacToe() {
             Tic-Tac-Toe
           </h1>
           <p className="text-muted-foreground">Play against the Computer</p>
-          <p className="text-sm text-muted-foreground">
-            $0.10 USD per game (~{parseFloat(ethAmount).toFixed(6)} ETH)
+          <p className="text-xs text-muted-foreground/70">
+            A small base fee applies to start your game
           </p>
         </div>
 
@@ -298,11 +298,8 @@ export default function TicTacToe() {
         {!gameActive && !isPendingPayment && (
           <Card className="p-6 text-center border-2 border-white/20 bg-white/10 backdrop-blur-md">
             <h2 className="text-2xl font-bold mb-4">Start New Game</h2>
-            <p className="text-muted-foreground mb-2">
-              Pay $0.10 USD to start playing on Base Sepolia testnet
-            </p>
             <p className="text-sm text-muted-foreground/70 mb-6">
-              ~{parseFloat(ethAmount).toFixed(6)} ETH at ${ethPrice.toFixed(2)}/ETH
+              Base fee: ~{parseFloat(ethAmount).toFixed(6)} ETH ($0.10 USD)
             </p>
             <Button
               onClick={startNewGame}
@@ -311,7 +308,7 @@ export default function TicTacToe() {
               className="w-full"
               data-testid="button-start-game"
             >
-              {isPending ? "Processing..." : `Pay & Start Game ($0.10)`}
+              {isPending ? "Processing..." : "Start Game"}
             </Button>
           </Card>
         )}
