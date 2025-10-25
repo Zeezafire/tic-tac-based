@@ -25,8 +25,14 @@
 - Game Fee: $0.10 USD worth of ETH (dynamic pricing via frontend)
 - Network: Base Sepolia Testnet
 - Chain ID: 84532
-- The contract accepts any payment >= minPayment (default: 0.0001 ETH)
-- Frontend calculates the exact ETH amount based on current ETH/USD price
+- The contract accepts any payment >= minPayment (default: 0.00001 ETH ≈ $0.02)
+- Frontend calculates the exact ETH amount based on current ETH/USD price from CoinGecko
+- Access Control: Only contract owner can update minPayment or withdraw funds
+
+## Security Features
+- `onlyOwner` modifier protects administrative functions
+- Dynamic pricing allows frontend to calculate USD-equivalent ETH amounts
+- Minimum payment threshold prevents spam/dust transactions
 
 ## After Deployment
 Update the contract address in `client/src/lib/web3.ts` with your deployed contract address.
