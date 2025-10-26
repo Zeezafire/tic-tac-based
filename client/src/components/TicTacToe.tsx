@@ -303,15 +303,15 @@ export default function TicTacToe() {
       {/* Splash Screen */}
       {showSplash && (
         <div 
-          className="fixed inset-0 z-[100] flex items-center justify-center cursor-pointer splash-background splash-auto-dismiss p-4 sm:p-6 md:p-8"
+          className="fixed inset-0 z-[100] cursor-pointer splash-background splash-auto-dismiss"
           onClick={() => setShowSplash(false)}
           data-testid="splash-screen"
         >
-          <div className="relative w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl splash-image-container splash-shimmer">
+          <div className="relative w-full h-full splash-image-container splash-shimmer flex items-center justify-center">
             <img 
               src={splashImage} 
               alt="Tic Tac Based Splash Screen" 
-              className="w-full h-auto max-h-[80vh] object-contain"
+              className="w-full h-full object-cover"
             />
           </div>
         </div>
