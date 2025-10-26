@@ -217,14 +217,13 @@ export default function TicTacToe() {
     if (isConfirmed && isPendingPayment) {
       setIsPendingPayment(false);
       setGameActive(true);
-      // Start ambient background sound with fade-in
-      startAmbient();
+      // Ambient sound already started on button click
       toast({
         title: "Payment Confirmed!",
         description: "Your game has started. Good luck!",
       });
     }
-  }, [isConfirmed, isPendingPayment, startAmbient]);
+  }, [isConfirmed, isPendingPayment]);
 
   // Handle ambient sound based on game state
   useEffect(() => {
@@ -244,6 +243,9 @@ export default function TicTacToe() {
       return;
     }
 
+    // Start ambient sound immediately on user click (for browser autoplay policy)
+    startAmbient();
+
     // Contract is deployed and ready to use
 
     try {
@@ -261,6 +263,8 @@ export default function TicTacToe() {
       });
     } catch (error: any) {
       setIsPendingPayment(false);
+      // Stop ambient if payment fails
+      stopAmbient();
       toast({
         title: "Transaction Failed",
         description: error.message || "Failed to send transaction",
