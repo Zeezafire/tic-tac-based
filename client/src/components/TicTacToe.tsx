@@ -317,66 +317,66 @@ export default function TicTacToe() {
         </div>
       )}
 
-      <div className="min-h-screen flex items-center justify-center p-4 bg-background">
+      <div className="min-h-screen flex items-center justify-center p-3 sm:p-4 md:p-6 bg-background">
         {/* Sound Toggle Button */}
         <Button
           variant="ghost"
           size="icon"
           onClick={toggleMute}
-          className="fixed top-4 right-4 z-50 glass-score-box"
+          className="fixed top-2 right-2 sm:top-4 sm:right-4 z-50 glass-score-box"
           data-testid="button-sound-toggle"
           aria-label={isMuted ? "Unmute sounds" : "Mute sounds"}
         >
           {isMuted ? (
-            <VolumeX className="h-5 w-5" />
+            <VolumeX className="h-4 w-4 sm:h-5 sm:w-5" />
           ) : (
-            <Volume2 className="h-5 w-5" />
+            <Volume2 className="h-4 w-4 sm:h-5 sm:w-5" />
           )}
         </Button>
 
-      <div className="w-full max-w-md space-y-8">
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl md:text-4xl font-bold neon-title" data-testid="text-title">
+      <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg space-y-4 sm:space-y-6 md:space-y-8">
+        <div className="text-center space-y-1 sm:space-y-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold neon-title" data-testid="text-title">
             Tic Tac Based
           </h1>
-          <p className="text-muted-foreground">Play against the Computer</p>
-          <p className="text-xs text-muted-foreground/70">
+          <p className="text-sm sm:text-base text-muted-foreground">Play against the Computer</p>
+          <p className="text-xs sm:text-sm text-muted-foreground/70">
             A small base fee applies to start your game
           </p>
         </div>
 
         <WalletConnect />
 
-        <div className="flex items-center justify-center gap-4">
-          <Card className={`flex-1 p-3 text-center glass-score-box ${lastWinner === PLAYER ? 'winner-glow' : ''}`}>
-            <div className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+        <div className="flex items-center justify-center gap-2 sm:gap-3 md:gap-4">
+          <Card className={`flex-1 p-2 sm:p-3 md:p-4 text-center glass-score-box ${lastWinner === PLAYER ? 'winner-glow' : ''}`}>
+            <div className="text-xs sm:text-sm font-medium uppercase tracking-wide text-muted-foreground">
               You (X)
             </div>
-            <div className="text-2xl font-bold" data-testid="text-score-player">
+            <div className="text-xl sm:text-2xl md:text-3xl font-bold" data-testid="text-score-player">
               {scores.player}
             </div>
           </Card>
-          <Card className={`flex-1 p-3 text-center glass-score-box ${lastWinner === COMPUTER ? 'winner-glow' : ''}`}>
-            <div className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+          <Card className={`flex-1 p-2 sm:p-3 md:p-4 text-center glass-score-box ${lastWinner === COMPUTER ? 'winner-glow' : ''}`}>
+            <div className="text-xs sm:text-sm font-medium uppercase tracking-wide text-muted-foreground">
               Computer (O)
             </div>
-            <div className="text-2xl font-bold" data-testid="text-score-computer">
+            <div className="text-xl sm:text-2xl md:text-3xl font-bold" data-testid="text-score-computer">
               {scores.computer}
             </div>
           </Card>
         </div>
 
         {!gameActive && !isPendingPayment && (
-          <Card className="p-6 text-center border-2 border-white/20 bg-white/10 backdrop-blur-md">
-            <h2 className="text-2xl font-bold mb-4">Start New Game</h2>
-            <p className="text-sm text-muted-foreground/70 mb-6">
+          <Card className="p-4 sm:p-5 md:p-6 text-center border-2 border-white/20 bg-white/10 backdrop-blur-md">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4">Start New Game</h2>
+            <p className="text-xs sm:text-sm text-muted-foreground/70 mb-4 sm:mb-6">
               Base fee: ~{parseFloat(ethAmount).toFixed(6)} ETH ($0.10 USD)
             </p>
             <Button
               onClick={startNewGame}
               disabled={!isConnected || isPending}
               size="lg"
-              className="w-full glow-button text-white font-bold tracking-wide"
+              className="w-full glow-button text-white font-bold tracking-wide text-sm sm:text-base"
               data-testid="button-start-game"
             >
               {isPending ? "Processing..." : "Start Game"}
@@ -385,9 +385,9 @@ export default function TicTacToe() {
         )}
 
         {isPendingPayment && (
-          <Card className="p-6 text-center border-2 border-white/20 bg-white/10 backdrop-blur-md">
-            <h2 className="text-2xl font-bold mb-4">Processing Payment...</h2>
-            <p className="text-muted-foreground">
+          <Card className="p-4 sm:p-5 md:p-6 text-center border-2 border-white/20 bg-white/10 backdrop-blur-md">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4">Processing Payment...</h2>
+            <p className="text-sm sm:text-base text-muted-foreground">
               {isConfirming 
                 ? "Waiting for transaction confirmation..." 
                 : "Transaction sent! Confirming..."}
@@ -397,8 +397,8 @@ export default function TicTacToe() {
 
         {gameActive && (
           <>
-            <Card className="p-6 md:p-8 border-2 border-white/20 bg-white/10 backdrop-blur-md shadow-[0_8px_32px_0_rgba(31,38,135,0.37)]">
-              <div className="grid grid-cols-3 gap-3 md:gap-4">
+            <Card className="p-3 sm:p-4 md:p-6 lg:p-8 border-2 border-white/20 bg-white/10 backdrop-blur-md shadow-[0_8px_32px_0_rgba(31,38,135,0.37)]">
+              <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4">
                 {board.map((cell, index) => (
                   <button
                     key={index}
@@ -413,9 +413,9 @@ export default function TicTacToe() {
                         : {}
                     }
                     className={`
-                      aspect-square rounded-xl border-2 
+                      aspect-square rounded-lg sm:rounded-xl border-2 
                       flex items-center justify-center
-                      text-5xl md:text-6xl font-bold
+                      text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold
                       transition-all duration-200
                       select-none
                       ${
@@ -444,9 +444,9 @@ export default function TicTacToe() {
               </div>
             </Card>
 
-            <div className="text-center space-y-4">
+            <div className="text-center space-y-3 sm:space-y-4">
               <div
-                className="text-xl md:text-2xl font-semibold min-h-[2rem]"
+                className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold min-h-[1.5rem] sm:min-h-[2rem]"
                 data-testid="text-status"
               >
                 {winner === "Draw" ? (
@@ -464,11 +464,11 @@ export default function TicTacToe() {
                 )}
               </div>
 
-              <div className="flex gap-2 justify-center">
+              <div className="flex flex-col sm:flex-row gap-2 justify-center">
                 <Button
                   onClick={resetGame}
                   variant="default"
-                  className="px-8"
+                  className="px-6 sm:px-8 text-sm sm:text-base"
                   data-testid="button-reset"
                 >
                   <RotateCcw className="w-4 h-4 mr-2" />
@@ -477,6 +477,7 @@ export default function TicTacToe() {
                 <Button
                   onClick={resetScores}
                   variant="outline"
+                  className="text-sm sm:text-base"
                   data-testid="button-reset-scores"
                 >
                   Reset Scores
