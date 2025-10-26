@@ -159,12 +159,7 @@ export function useSounds() {
   }, [isMuted]);
 
   const startAmbient = useCallback(() => {
-    if (isAmbientPlayingRef.current) {
-      console.log('Ambient already playing, skipping');
-      return;
-    }
-    
-    console.log('Starting ambient sound...');
+    if (isAmbientPlayingRef.current) return;
     
     if (!audioContextRef.current) {
       audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -175,7 +170,6 @@ export function useSounds() {
 
     // Create or reuse audio element
     if (!ambientAudioRef.current) {
-      console.log('Creating new audio element with URL:', drillBeatUrl);
       const audio = new Audio(drillBeatUrl);
       audio.loop = true;
       audio.volume = 1; // Let Web Audio API gain control the volume
@@ -186,7 +180,6 @@ export function useSounds() {
 
     // Create media source if it doesn't exist
     if (!ambientSourceRef.current) {
-      console.log('Creating media source and gain node');
       const source = ctx.createMediaElementSource(audio);
       ambientSourceRef.current = source;
       
@@ -203,15 +196,11 @@ export function useSounds() {
     const gainNode = ambientGainRef.current!;
 
     // Fade in to 15% volume over 2 seconds
-    console.log('Setting gain fade from 0 to 0.15');
     gainNode.gain.setValueAtTime(0, now);
     gainNode.gain.linearRampToValueAtTime(0.15, now + 2);
 
     // Start playing
-    console.log('Starting audio playback');
-    audio.play()
-      .then(() => console.log('Audio playing successfully!'))
-      .catch(err => console.error('Error playing ambient audio:', err));
+    audio.play().catch(err => console.error('Error playing ambient audio:', err));
     isAmbientPlayingRef.current = true;
   }, []);
 
