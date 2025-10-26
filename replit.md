@@ -32,10 +32,13 @@ Preferred communication style: Simple, everyday language.
 - Web Audio API for generating synthetic sound effects and ambient background
 - Custom React hook (useSounds) for sound management
 - Sound effects: player move click, computer move click, win chime, lose tone, draw tone
-- Ambient background: Futuristic synth pad with multiple oscillator layers (55Hz, 82Hz, 220Hz, 440Hz)
+- Ambient background: Light digital chime loop (15-second pattern)
+  - Clean, airy synth chimes and subtle pulses
+  - Frequencies: C5, E5, G5, A5, F5, D5, C6 in relaxed pattern
   - Fades in over 2 seconds when game starts at 15% volume
   - Fades out over 2 seconds when game ends or muted
-  - Loops seamlessly without restarting between rounds
+  - Seamless looping without gaps or restarts
+  - Modern lo-fi aesthetic matching Base chain arcade theme
 - Mute toggle with localStorage persistence
 - Non-overlapping sound effect playback to prevent audio lag
 

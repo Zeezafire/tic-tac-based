@@ -10,9 +10,9 @@ export function useSounds() {
 
   const audioContextRef = useRef<AudioContext | null>(null);
   const isPlayingRef = useRef(false);
-  const ambientOscillatorsRef = useRef<OscillatorNode[]>([]);
   const ambientGainRef = useRef<GainNode | null>(null);
   const isAmbientPlayingRef = useRef(false);
+  const ambientIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     // Initialize AudioContext on first user interaction
@@ -166,53 +166,75 @@ export function useSounds() {
     const ctx = audioContextRef.current;
     const now = ctx.currentTime;
 
-    // Create gain node for volume control and fading
-    const gainNode = ctx.createGain();
-    gainNode.connect(ctx.destination);
-    ambientGainRef.current = gainNode;
+    // Create master gain node for volume control and fading
+    const masterGain = ctx.createGain();
+    masterGain.connect(ctx.destination);
+    ambientGainRef.current = masterGain;
 
     // Start at 0 and fade in to 15% volume over 2 seconds
-    gainNode.gain.setValueAtTime(0, now);
-    gainNode.gain.linearRampToValueAtTime(0.15, now + 2);
+    masterGain.gain.setValueAtTime(0, now);
+    masterGain.gain.linearRampToValueAtTime(0.15, now + 2);
 
-    // Create a futuristic ambient pad using multiple oscillators
-    const oscillators: OscillatorNode[] = [];
+    // Digital chime/pulse pattern - clean and airy
+    const playChime = (frequency: number, startTime: number, duration: number = 0.15, volume: number = 0.3) => {
+      const osc = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(frequency, startTime);
+      
+      // Soft attack and decay for smooth chime
+      gainNode.gain.setValueAtTime(0, startTime);
+      gainNode.gain.linearRampToValueAtTime(volume, startTime + 0.02);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+      
+      osc.connect(gainNode);
+      gainNode.connect(masterGain);
+      
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    };
 
-    // Base drone - low frequency
-    const osc1 = ctx.createOscillator();
-    osc1.type = 'sine';
-    osc1.frequency.setValueAtTime(55, now); // A1
-    osc1.connect(gainNode);
-    oscillators.push(osc1);
+    // Create a 15-second looping pattern with digital chimes
+    const loopDuration = 15; // 15 seconds
 
-    // Mid harmonic
-    const osc2 = ctx.createOscillator();
-    osc2.type = 'sine';
-    osc2.frequency.setValueAtTime(82.41, now); // E2
-    osc2.connect(gainNode);
-    oscillators.push(osc2);
+    const playPattern = () => {
+      const baseTime = ctx.currentTime;
+      
+      // Pattern: soft digital chimes in a calming sequence
+      // Measure 1 (0-3s): Gentle intro
+      playChime(523.25, baseTime + 0, 0.2, 0.25);      // C5
+      playChime(659.25, baseTime + 1.5, 0.15, 0.2);    // E5
+      playChime(783.99, baseTime + 2.5, 0.18, 0.22);   // G5
+      
+      // Measure 2 (3-6s): Response
+      playChime(880, baseTime + 4, 0.15, 0.18);        // A5
+      playChime(659.25, baseTime + 5.5, 0.2, 0.2);     // E5
+      
+      // Measure 3 (6-9s): Digital pulse accent
+      playChime(1046.5, baseTime + 7, 0.12, 0.15);     // C6 (higher, softer)
+      playChime(783.99, baseTime + 8, 0.18, 0.2);      // G5
+      
+      // Measure 4 (9-12s): Ambient fill
+      playChime(523.25, baseTime + 10, 0.2, 0.2);      // C5
+      playChime(698.46, baseTime + 11.5, 0.15, 0.18);  // F5
+      
+      // Measure 5 (12-15s): Gentle close
+      playChime(587.33, baseTime + 13, 0.2, 0.22);     // D5
+      playChime(523.25, baseTime + 14.2, 0.25, 0.2);   // C5 (ending)
+    };
 
-    // High shimmer
-    const osc3 = ctx.createOscillator();
-    osc3.type = 'triangle';
-    osc3.frequency.setValueAtTime(220, now); // A3
-    osc3.connect(gainNode);
-    oscillators.push(osc3);
+    // Play the pattern immediately
+    playPattern();
 
-    // Very subtle high frequency for sci-fi feel
-    const osc4 = ctx.createOscillator();
-    osc4.type = 'sine';
-    osc4.frequency.setValueAtTime(440, now); // A4
-    const osc4Gain = ctx.createGain();
-    osc4Gain.gain.setValueAtTime(0.3, now); // Quieter
-    osc4.connect(osc4Gain);
-    osc4Gain.connect(gainNode);
-    oscillators.push(osc4);
+    // Set up interval to loop the pattern every 15 seconds
+    const interval = setInterval(() => {
+      if (isAmbientPlayingRef.current) {
+        playPattern();
+      }
+    }, loopDuration * 1000);
 
-    // Start all oscillators
-    oscillators.forEach(osc => osc.start(now));
-    
-    ambientOscillatorsRef.current = oscillators;
+    ambientIntervalRef.current = interval;
     isAmbientPlayingRef.current = true;
   }, []);
 
@@ -229,16 +251,14 @@ export function useSounds() {
       gainNode.gain.setValueAtTime(currentGain, now);
       gainNode.gain.linearRampToValueAtTime(0, now + 2);
 
-      // Stop oscillators after fade out completes
+      // Stop the looping interval
+      if (ambientIntervalRef.current) {
+        clearInterval(ambientIntervalRef.current);
+        ambientIntervalRef.current = null;
+      }
+
+      // Mark as stopped after fade out completes
       setTimeout(() => {
-        ambientOscillatorsRef.current.forEach(osc => {
-          try {
-            osc.stop();
-          } catch (e) {
-            // Already stopped
-          }
-        });
-        ambientOscillatorsRef.current = [];
         isAmbientPlayingRef.current = false;
       }, 2100);
     }
@@ -263,15 +283,13 @@ export function useSounds() {
         gainNode.gain.setValueAtTime(currentGain, now);
         gainNode.gain.linearRampToValueAtTime(0, now + 2);
 
+        // Stop the looping interval
+        if (ambientIntervalRef.current) {
+          clearInterval(ambientIntervalRef.current);
+          ambientIntervalRef.current = null;
+        }
+
         setTimeout(() => {
-          ambientOscillatorsRef.current.forEach(osc => {
-            try {
-              osc.stop();
-            } catch (e) {
-              // Already stopped
-            }
-          });
-          ambientOscillatorsRef.current = [];
           isAmbientPlayingRef.current = false;
         }, 2100);
       }
@@ -281,14 +299,10 @@ export function useSounds() {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      ambientOscillatorsRef.current.forEach(osc => {
-        try {
-          osc.stop();
-        } catch (e) {
-          // Already stopped
-        }
-      });
-      ambientOscillatorsRef.current = [];
+      if (ambientIntervalRef.current) {
+        clearInterval(ambientIntervalRef.current);
+        ambientIntervalRef.current = null;
+      }
       isAmbientPlayingRef.current = false;
     };
   }, []);
