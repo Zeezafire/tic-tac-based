@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
+import drillBeatUrl from '@assets/Drill X0_mix_1761502671826.mp3';
 
 export type SoundType = 'playerMove' | 'computerMove' | 'win' | 'lose' | 'draw';
 
@@ -169,7 +170,7 @@ export function useSounds() {
 
     // Create or reuse audio element
     if (!ambientAudioRef.current) {
-      const audio = new Audio('/attached_assets/Drill X0_mix_1761502671826.mp3');
+      const audio = new Audio(drillBeatUrl);
       audio.loop = true;
       audio.volume = 0; // Start at 0 for fade in
       ambientAudioRef.current = audio;
