@@ -2,8 +2,8 @@ import { createConfig, http } from 'wagmi'
 import { baseSepolia } from 'wagmi/chains'
 import { getDefaultConfig } from '@rainbow-me/rainbowkit'
 
-// Replace with your deployed contract address after deployment
-export const GAME_CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000000' as const
+// Deployed contract address on Base Sepolia
+export const GAME_CONTRACT_ADDRESS = '0x621d9D991b3971bE088d2FC8b6A585eF142411F3' as const
 
 export const GAME_CONTRACT_ABI = [
   {
