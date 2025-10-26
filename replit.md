@@ -2,7 +2,7 @@
 
 ## Overview
 
-A modern web-based Tic-Tac-Toe game with blockchain integration on Base Sepolia testnet. Players pay $0.10 USD worth of ETH per game, with dynamic pricing calculated from real-time ETH/USD rates via CoinGecko API. The application features a React frontend with Web3 wallet connectivity through RainbowKit, and a minimal Express backend.
+A modern web-based Tic-Tac-Toe game with blockchain integration on Base Mainnet. Players pay $0.10 USD worth of ETH per game, with dynamic pricing calculated from real-time ETH/USD rates via CoinGecko API. The application features a React frontend with Web3 wallet connectivity through RainbowKit, and a minimal Express backend.
 
 ## User Preferences
 
@@ -26,7 +26,7 @@ Preferred communication style: Simple, everyday language.
 - Wagmi for Ethereum interactions and wallet management
 - RainbowKit for wallet connection UI
 - Viem for Ethereum utilities and type-safe contract interactions
-- Configured for Base Sepolia testnet (Chain ID: 84532)
+- Configured for Base Mainnet (Chain ID: 8453)
 
 **Audio System**: 
 - Web Audio API for generating synthetic sound effects
@@ -87,28 +87,30 @@ Preferred communication style: Simple, everyday language.
 
 ### Smart Contract Architecture
 
-**Contract**: TicTacToeGame.sol (Solidity 0.8.20+) deployed on Base Sepolia testnet.
+**Contract**: TicTacToeGame.sol (Solidity 0.8.20+) deployed on Base Mainnet at `0x621d9D991b3971bE088d2FC8b6A585eF142411F3`.
 
 **Key Functions**:
 - `startGame()` - Payable function accepting ETH to initiate a game session
 - `minPayment` - Configurable minimum payment threshold (default: 0.00001 ETH)
 - `updateMinPayment()` - Owner-only function to adjust minimum payment
+- `withdraw()` - Owner-only function to withdraw collected ETH fees
 - Events: `GameStarted` emitted with player address, timestamp, and amount paid
 
 **Access Control**: Basic owner-only modifiers for administrative functions.
 
 **Integration Pattern**: Frontend calculates exact ETH amount based on $0.10 USD target price, ensuring payments meet contract's minimum threshold while achieving dollar-denominated pricing.
 
-**Deployment**: Manual deployment via Remix IDE with contract address configured in `client/src/lib/web3.ts`.
+**Deployment**: Deployed to Base Mainnet via Remix IDE with contract address configured in `client/src/lib/web3.ts`.
 
 ## External Dependencies
 
 ### Blockchain Services
 
-- **Base Sepolia Testnet**: Ethereum Layer 2 testnet for game transactions
-  - RPC: https://sepolia.base.org
-  - Explorer: https://sepolia.basescan.org
-- **Faucets**: Alchemy and Coinbase faucets for testnet ETH
+- **Base Mainnet**: Ethereum Layer 2 network for game transactions (uses real ETH)
+  - RPC: https://mainnet.base.org
+  - Chain ID: 8453
+  - Explorer: https://basescan.org
+  - Contract Address: 0x621d9D991b3971bE088d2FC8b6A585eF142411F3
 - **WalletConnect**: Optional Project ID for enhanced wallet connectivity
 
 ### APIs
