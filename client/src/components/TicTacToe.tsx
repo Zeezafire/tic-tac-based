@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { parseEther } from "viem";
 import { GAME_CONTRACT_ADDRESS, GAME_CONTRACT_ABI, calculateEthForUSD, getEthPriceUSD } from "@/lib/web3";
 import WalletConnect from "./WalletConnect";
 import { useToast } from "@/hooks/use-toast";
+import { useSounds } from "@/hooks/useSounds";
 
 type Player = "X" | "O";
 type CellValue = Player | null;
@@ -46,6 +47,7 @@ export default function TicTacToe() {
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
     hash,
   });
+  const { playSound, isMuted, toggleMute } = useSounds();
 
   const PLAYER = "X";
   const COMPUTER = "O";
@@ -147,6 +149,9 @@ export default function TicTacToe() {
         const newBoard = [...currentBoard];
         newBoard[move] = COMPUTER;
         setBoard(newBoard);
+        
+        // Play computer move sound
+        playSound('computerMove');
 
         const winResult = checkWinner(newBoard);
         if (winResult) {
@@ -158,8 +163,11 @@ export default function TicTacToe() {
             computer: prev.computer + 1,
           }));
           setTimeout(() => setLastWinner(null), 2000);
+          // Play lose sound after a short delay
+          setTimeout(() => playSound('lose'), 300);
         } else if (newBoard.every((cell) => cell !== null)) {
           setWinner("Draw");
+          setTimeout(() => playSound('draw'), 300);
         } else {
           setCurrentPlayer(PLAYER);
         }
@@ -181,6 +189,9 @@ export default function TicTacToe() {
     const newBoard = [...board];
     newBoard[index] = PLAYER;
     setBoard(newBoard);
+    
+    // Play player move sound
+    playSound('playerMove');
 
     const winResult = checkWinner(newBoard);
     if (winResult) {
@@ -192,8 +203,11 @@ export default function TicTacToe() {
         player: prev.player + 1,
       }));
       setTimeout(() => setLastWinner(null), 2000);
+      // Play win sound after a short delay
+      setTimeout(() => playSound('win'), 300);
     } else if (newBoard.every((cell) => cell !== null)) {
       setWinner("Draw");
+      setTimeout(() => playSound('draw'), 300);
     } else {
       setCurrentPlayer(COMPUTER);
     }
@@ -220,14 +234,7 @@ export default function TicTacToe() {
       return;
     }
 
-    if (GAME_CONTRACT_ADDRESS === '0x0000000000000000000000000000000000000000') {
-      toast({
-        title: "Contract Not Deployed",
-        description: "Please deploy the smart contract first. Check contracts/deployment-instructions.md",
-        variant: "destructive",
-      });
-      return;
-    }
+    // Contract is deployed and ready to use
 
     try {
       setIsPendingPayment(true);
@@ -268,6 +275,22 @@ export default function TicTacToe() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
+      {/* Sound Toggle Button */}
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={toggleMute}
+        className="fixed top-4 right-4 z-50 glass-score-box"
+        data-testid="button-sound-toggle"
+        aria-label={isMuted ? "Unmute sounds" : "Mute sounds"}
+      >
+        {isMuted ? (
+          <VolumeX className="h-5 w-5" />
+        ) : (
+          <Volume2 className="h-5 w-5" />
+        )}
+      </Button>
+
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
           <h1 className="text-3xl md:text-4xl font-bold neon-title" data-testid="text-title">

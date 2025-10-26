@@ -28,11 +28,19 @@ Preferred communication style: Simple, everyday language.
 - Viem for Ethereum utilities and type-safe contract interactions
 - Configured for Base Sepolia testnet (Chain ID: 84532)
 
+**Audio System**: 
+- Web Audio API for generating synthetic sound effects
+- Custom React hook (useSounds) for sound management
+- Sounds: player move click, computer move click, win chime, lose tone, draw tone
+- Mute toggle with localStorage persistence
+- Non-overlapping sound playback to prevent audio lag
+
 **Key Design Decisions**:
 - No traditional authentication system - wallet connection serves as user identity
 - Game state managed entirely client-side (no backend persistence)
 - Real-time ETH price fetching from CoinGecko to calculate USD-equivalent payment amounts
 - Component-based architecture with clear separation between game logic and Web3 interactions
+- Synthetic audio generation (no external audio files) for lightweight, instant loading
 
 ### Backend Architecture
 
