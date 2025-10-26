@@ -289,24 +289,30 @@ export default function TicTacToe() {
     resetGame();
   };
 
+  // Auto-dismiss splash screen after 4 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSplash(false);
+    }, 4000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <>
       {/* Splash Screen */}
       {showSplash && (
         <div 
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-background cursor-pointer animate-in fade-in duration-500"
+          className="fixed inset-0 z-[100] flex items-center justify-center cursor-pointer splash-background splash-auto-dismiss"
           onClick={() => setShowSplash(false)}
           data-testid="splash-screen"
         >
-          <div className="relative w-full max-w-2xl px-4">
+          <div className="relative w-full max-w-2xl px-4 splash-image-container splash-shimmer">
             <img 
               src={splashImage} 
               alt="Tic Tac Based Splash Screen" 
-              className="w-full h-auto animate-in zoom-in-95 duration-700"
+              className="w-full h-auto"
             />
-            <p className="text-center mt-8 text-muted-foreground text-sm animate-pulse">
-              Click anywhere to continue
-            </p>
           </div>
         </div>
       )}
