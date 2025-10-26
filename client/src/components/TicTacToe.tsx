@@ -8,6 +8,7 @@ import { GAME_CONTRACT_ADDRESS, GAME_CONTRACT_ABI, calculateEthForUSD, getEthPri
 import WalletConnect from "./WalletConnect";
 import { useToast } from "@/hooks/use-toast";
 import { useSounds } from "@/hooks/useSounds";
+import splashImage from "@assets/TIC TAC BASED Design Splash_1761504830464.png";
 
 type Player = "X" | "O";
 type CellValue = Player | null;
@@ -29,6 +30,7 @@ const WINNING_COMBINATIONS = [
 ];
 
 export default function TicTacToe() {
+  const [showSplash, setShowSplash] = useState(true);
   const [board, setBoard] = useState<Board>(Array(9).fill(null));
   const [currentPlayer, setCurrentPlayer] = useState<Player>("X");
   const [winner, setWinner] = useState<Player | "Draw" | null>(null);
@@ -288,22 +290,43 @@ export default function TicTacToe() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-background">
-      {/* Sound Toggle Button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={toggleMute}
-        className="fixed top-4 right-4 z-50 glass-score-box"
-        data-testid="button-sound-toggle"
-        aria-label={isMuted ? "Unmute sounds" : "Mute sounds"}
-      >
-        {isMuted ? (
-          <VolumeX className="h-5 w-5" />
-        ) : (
-          <Volume2 className="h-5 w-5" />
-        )}
-      </Button>
+    <>
+      {/* Splash Screen */}
+      {showSplash && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-background cursor-pointer animate-in fade-in duration-500"
+          onClick={() => setShowSplash(false)}
+          data-testid="splash-screen"
+        >
+          <div className="relative w-full max-w-2xl px-4">
+            <img 
+              src={splashImage} 
+              alt="Tic Tac Based Splash Screen" 
+              className="w-full h-auto animate-in zoom-in-95 duration-700"
+            />
+            <p className="text-center mt-8 text-muted-foreground text-sm animate-pulse">
+              Click anywhere to continue
+            </p>
+          </div>
+        </div>
+      )}
+
+      <div className="min-h-screen flex items-center justify-center p-4 bg-background">
+        {/* Sound Toggle Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleMute}
+          className="fixed top-4 right-4 z-50 glass-score-box"
+          data-testid="button-sound-toggle"
+          aria-label={isMuted ? "Unmute sounds" : "Mute sounds"}
+        >
+          {isMuted ? (
+            <VolumeX className="h-5 w-5" />
+          ) : (
+            <Volume2 className="h-5 w-5" />
+          )}
+        </Button>
 
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
@@ -458,5 +481,6 @@ export default function TicTacToe() {
         )}
       </div>
     </div>
+    </>
   );
 }
