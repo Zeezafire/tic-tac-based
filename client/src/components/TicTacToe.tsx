@@ -47,7 +47,7 @@ export default function TicTacToe() {
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
     hash,
   });
-  const { playSound, isMuted, toggleMute } = useSounds();
+  const { playSound, isMuted, toggleMute, startAmbient, stopAmbient } = useSounds();
 
   const PLAYER = "X";
   const COMPUTER = "O";
@@ -217,12 +217,22 @@ export default function TicTacToe() {
     if (isConfirmed && isPendingPayment) {
       setIsPendingPayment(false);
       setGameActive(true);
+      // Start ambient background sound with fade-in
+      startAmbient();
       toast({
         title: "Payment Confirmed!",
         description: "Your game has started. Good luck!",
       });
     }
-  }, [isConfirmed, isPendingPayment]);
+  }, [isConfirmed, isPendingPayment, startAmbient]);
+
+  // Handle ambient sound based on game state
+  useEffect(() => {
+    if (!gameActive) {
+      // Fade out ambient when game ends
+      stopAmbient();
+    }
+  }, [gameActive, stopAmbient]);
 
   const startNewGame = async () => {
     if (!isConnected) {

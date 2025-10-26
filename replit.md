@@ -29,11 +29,15 @@ Preferred communication style: Simple, everyday language.
 - Configured for Base Sepolia testnet (Chain ID: 84532)
 
 **Audio System**: 
-- Web Audio API for generating synthetic sound effects
+- Web Audio API for generating synthetic sound effects and ambient background
 - Custom React hook (useSounds) for sound management
-- Sounds: player move click, computer move click, win chime, lose tone, draw tone
+- Sound effects: player move click, computer move click, win chime, lose tone, draw tone
+- Ambient background: Futuristic synth pad with multiple oscillator layers (55Hz, 82Hz, 220Hz, 440Hz)
+  - Fades in over 2 seconds when game starts at 15% volume
+  - Fades out over 2 seconds when game ends or muted
+  - Loops seamlessly without restarting between rounds
 - Mute toggle with localStorage persistence
-- Non-overlapping sound playback to prevent audio lag
+- Non-overlapping sound effect playback to prevent audio lag
 
 **Key Design Decisions**:
 - No traditional authentication system - wallet connection serves as user identity
