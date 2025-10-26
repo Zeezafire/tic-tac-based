@@ -12,7 +12,8 @@ export function useSounds() {
   const isPlayingRef = useRef(false);
   const ambientGainRef = useRef<GainNode | null>(null);
   const isAmbientPlayingRef = useRef(false);
-  const ambientIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const ambientAudioRef = useRef<HTMLAudioElement | null>(null);
+  const ambientSourceRef = useRef<MediaElementAudioSourceNode | null>(null);
 
   useEffect(() => {
     // Initialize AudioContext on first user interaction
@@ -166,75 +167,39 @@ export function useSounds() {
     const ctx = audioContextRef.current;
     const now = ctx.currentTime;
 
-    // Create master gain node for volume control and fading
-    const masterGain = ctx.createGain();
-    masterGain.connect(ctx.destination);
-    ambientGainRef.current = masterGain;
+    // Create or reuse audio element
+    if (!ambientAudioRef.current) {
+      const audio = new Audio('/attached_assets/Drill X0_mix_1761502671826.mp3');
+      audio.loop = true;
+      audio.volume = 0; // Start at 0 for fade in
+      ambientAudioRef.current = audio;
+    }
 
-    // Start at 0 and fade in to 15% volume over 2 seconds
-    masterGain.gain.setValueAtTime(0, now);
-    masterGain.gain.linearRampToValueAtTime(0.15, now + 2);
+    const audio = ambientAudioRef.current;
 
-    // Digital chime/pulse pattern - clean and airy
-    const playChime = (frequency: number, startTime: number, duration: number = 0.15, volume: number = 0.3) => {
-      const osc = ctx.createOscillator();
+    // Create media source if it doesn't exist
+    if (!ambientSourceRef.current) {
+      const source = ctx.createMediaElementSource(audio);
+      ambientSourceRef.current = source;
+      
+      // Create gain node for volume control and fading
       const gainNode = ctx.createGain();
+      gainNode.gain.setValueAtTime(0, now);
+      ambientGainRef.current = gainNode;
       
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(frequency, startTime);
-      
-      // Soft attack and decay for smooth chime
-      gainNode.gain.setValueAtTime(0, startTime);
-      gainNode.gain.linearRampToValueAtTime(volume, startTime + 0.02);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
-      
-      osc.connect(gainNode);
-      gainNode.connect(masterGain);
-      
-      osc.start(startTime);
-      osc.stop(startTime + duration);
-    };
+      // Connect: source -> gain -> destination
+      source.connect(gainNode);
+      gainNode.connect(ctx.destination);
+    }
 
-    // Create a 15-second looping pattern with digital chimes
-    const loopDuration = 15; // 15 seconds
+    const gainNode = ambientGainRef.current!;
 
-    const playPattern = () => {
-      const baseTime = ctx.currentTime;
-      
-      // Pattern: soft digital chimes in a calming sequence
-      // Measure 1 (0-3s): Gentle intro
-      playChime(523.25, baseTime + 0, 0.2, 0.25);      // C5
-      playChime(659.25, baseTime + 1.5, 0.15, 0.2);    // E5
-      playChime(783.99, baseTime + 2.5, 0.18, 0.22);   // G5
-      
-      // Measure 2 (3-6s): Response
-      playChime(880, baseTime + 4, 0.15, 0.18);        // A5
-      playChime(659.25, baseTime + 5.5, 0.2, 0.2);     // E5
-      
-      // Measure 3 (6-9s): Digital pulse accent
-      playChime(1046.5, baseTime + 7, 0.12, 0.15);     // C6 (higher, softer)
-      playChime(783.99, baseTime + 8, 0.18, 0.2);      // G5
-      
-      // Measure 4 (9-12s): Ambient fill
-      playChime(523.25, baseTime + 10, 0.2, 0.2);      // C5
-      playChime(698.46, baseTime + 11.5, 0.15, 0.18);  // F5
-      
-      // Measure 5 (12-15s): Gentle close
-      playChime(587.33, baseTime + 13, 0.2, 0.22);     // D5
-      playChime(523.25, baseTime + 14.2, 0.25, 0.2);   // C5 (ending)
-    };
+    // Fade in to 15% volume over 2 seconds
+    gainNode.gain.setValueAtTime(0, now);
+    gainNode.gain.linearRampToValueAtTime(0.15, now + 2);
 
-    // Play the pattern immediately
-    playPattern();
-
-    // Set up interval to loop the pattern every 15 seconds
-    const interval = setInterval(() => {
-      if (isAmbientPlayingRef.current) {
-        playPattern();
-      }
-    }, loopDuration * 1000);
-
-    ambientIntervalRef.current = interval;
+    // Start playing
+    audio.play().catch(err => console.error('Error playing ambient audio:', err));
     isAmbientPlayingRef.current = true;
   }, []);
 
@@ -244,6 +209,7 @@ export function useSounds() {
     const ctx = audioContextRef.current;
     const now = ctx.currentTime;
     const gainNode = ambientGainRef.current;
+    const audio = ambientAudioRef.current;
 
     if (gainNode) {
       // Fade out over 2 seconds
@@ -251,14 +217,11 @@ export function useSounds() {
       gainNode.gain.setValueAtTime(currentGain, now);
       gainNode.gain.linearRampToValueAtTime(0, now + 2);
 
-      // Stop the looping interval
-      if (ambientIntervalRef.current) {
-        clearInterval(ambientIntervalRef.current);
-        ambientIntervalRef.current = null;
-      }
-
-      // Mark as stopped after fade out completes
+      // Pause audio after fade out completes
       setTimeout(() => {
+        if (audio) {
+          audio.pause();
+        }
         isAmbientPlayingRef.current = false;
       }, 2100);
     }
@@ -277,19 +240,17 @@ export function useSounds() {
       const ctx = audioContextRef.current;
       const now = ctx.currentTime;
       const gainNode = ambientGainRef.current;
+      const audio = ambientAudioRef.current;
 
       if (gainNode) {
         const currentGain = gainNode.gain.value;
         gainNode.gain.setValueAtTime(currentGain, now);
         gainNode.gain.linearRampToValueAtTime(0, now + 2);
 
-        // Stop the looping interval
-        if (ambientIntervalRef.current) {
-          clearInterval(ambientIntervalRef.current);
-          ambientIntervalRef.current = null;
-        }
-
         setTimeout(() => {
+          if (audio) {
+            audio.pause();
+          }
           isAmbientPlayingRef.current = false;
         }, 2100);
       }
@@ -299,9 +260,10 @@ export function useSounds() {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (ambientIntervalRef.current) {
-        clearInterval(ambientIntervalRef.current);
-        ambientIntervalRef.current = null;
+      const audio = ambientAudioRef.current;
+      if (audio) {
+        audio.pause();
+        audio.src = '';
       }
       isAmbientPlayingRef.current = false;
     };

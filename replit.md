@@ -29,16 +29,15 @@ Preferred communication style: Simple, everyday language.
 - Configured for Base Sepolia testnet (Chain ID: 84532)
 
 **Audio System**: 
-- Web Audio API for generating synthetic sound effects and ambient background
+- Web Audio API for generating synthetic sound effects
 - Custom React hook (useSounds) for sound management
 - Sound effects: player move click, computer move click, win chime, lose tone, draw tone
-- Ambient background: Light digital chime loop (15-second pattern)
-  - Clean, airy synth chimes and subtle pulses
-  - Frequencies: C5, E5, G5, A5, F5, D5, C6 in relaxed pattern
+- Ambient background: Custom drill beat MP3 ("Drill X0_mix")
+  - Loaded from attached_assets/Drill X0_mix_1761502671826.mp3
+  - Seamless looping playback using HTML Audio element with Web Audio API gain control
   - Fades in over 2 seconds when game starts at 15% volume
   - Fades out over 2 seconds when game ends or muted
-  - Seamless looping without gaps or restarts
-  - Modern lo-fi aesthetic matching Base chain arcade theme
+  - Continues playing between rounds without restarting
 - Mute toggle with localStorage persistence
 - Non-overlapping sound effect playback to prevent audio lag
 
