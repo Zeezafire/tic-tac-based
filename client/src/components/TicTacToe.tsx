@@ -257,6 +257,7 @@ export default function TicTacToe() {
         abi: GAME_CONTRACT_ABI,
         functionName: 'startGame',
         value: parseEther(ethAmount),
+        gas: BigInt(100000), // Manual gas limit to prevent overestimation
       });
       
       toast({
