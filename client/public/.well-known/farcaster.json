@@ -5,7 +5,7 @@
     "signature": ""
   },
   "frame": {
-    "version": "next",
+    "version": "1",
     "name": "Tic Tac Based",
     "iconUrl": "https://tic-tac-based.vercel.app/favicon.png",
     "homeUrl": "https://tic-tac-based.vercel.app",
