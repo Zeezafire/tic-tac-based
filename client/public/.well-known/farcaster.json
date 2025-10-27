@@ -15,7 +15,6 @@
     "splashImageUrl": "https://tic-tac-based.vercel.app/favicon.png",
     "splashBackgroundColor": "#0a0e1a",
     "subtitle": "Based tic-tac-toe on Base",
-    "description": "Play tic-tac-toe on Base blockchain! Pay 0.10 USD in ETH per game, compete against AI, and enjoy Based vibes.",
     "primaryCategory": "games",
     "tags": ["game", "blockchain", "based", "tictactoe"],
     "tagline": "Based tic-tac-toe",
