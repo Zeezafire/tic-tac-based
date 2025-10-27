@@ -4,9 +4,6 @@
     "payload": "",
     "signature": ""
   },
-  "baseBuilder": {
-    "ownerAddress": "0x"
-  },
   "miniapp": {
     "version": "1",
     "name": "Tic Tac Based",
