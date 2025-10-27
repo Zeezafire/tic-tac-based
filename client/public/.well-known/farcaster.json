@@ -4,23 +4,17 @@
     "payload": "",
     "signature": ""
   },
-  "miniapp": {
-    "version": "1",
+  "frame": {
+    "version": "next",
     "name": "Tic Tac Based",
-    "homeUrl": "https://tic-tac-based.vercel.app",
     "iconUrl": "https://tic-tac-based.vercel.app/favicon.png",
+    "homeUrl": "https://tic-tac-based.vercel.app",
+    "imageUrl": "https://tic-tac-based.vercel.app/favicon.png",
+    "buttonTitle": "Play Now",
+    "description": "Play tic-tac-toe on Base! $0.10 per game in ETH.",
+    "primaryCategory": "game",
+    "tags": ["game", "blockchain", "base", "tictactoe"],
     "splashImageUrl": "https://tic-tac-based.vercel.app/favicon.png",
-    "splashBackgroundColor": "#0a0e1a",
-    "subtitle": "Based tic-tac-toe on Base",
-    "description": "Play tic-tac-toe on Base blockchain! Pay $0.10 USD in ETH per game, compete against AI, and enjoy Based vibes with custom drill beats and glassmorphism design.",
-    "screenshotUrls": [],
-    "primaryCategory": "games",
-    "tags": ["game", "blockchain", "based", "base", "tictactoe"],
-    "heroImageUrl": "https://tic-tac-based.vercel.app/favicon.png",
-    "tagline": "Based tic-tac-toe",
-    "ogTitle": "Tic Tac Based - Blockchain Tic-Tac-Toe",
-    "ogDescription": "Play tic-tac-toe on Base! $0.10 per game in ETH.",
-    "ogImageUrl": "https://tic-tac-based.vercel.app/favicon.png",
-    "noindex": false
+    "splashBackgroundColor": "#0a0e1a"
   }
 }
