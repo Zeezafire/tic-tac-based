@@ -16,5 +16,8 @@
     "tags": ["game", "blockchain", "base", "tictactoe"],
     "splashImageUrl": "https://tic-tac-based.vercel.app/favicon.png",
     "splashBackgroundColor": "#0a0e1a"
+  },
+  "baseBuilder": {
+    "ownerAddress": "0x630781cb677A82a666B8E49B99E02DEe345ee919"
   }
 }
