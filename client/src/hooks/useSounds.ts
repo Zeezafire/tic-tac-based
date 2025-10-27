@@ -15,6 +15,7 @@ export function useSounds() {
   const isAmbientPlayingRef = useRef(false);
   const ambientAudioRef = useRef<HTMLAudioElement | null>(null);
   const ambientSourceRef = useRef<MediaElementAudioSourceNode | null>(null);
+  const timeoutsRef = useRef<Set<NodeJS.Timeout>>(new Set());
 
   useEffect(() => {
     // Initialize AudioContext on first user interaction
@@ -61,7 +62,11 @@ export function useSounds() {
           oscillator.start(now);
           oscillator.stop(now + 0.08);
           
-          setTimeout(() => { isPlayingRef.current = false; }, 100);
+          const timeout1 = setTimeout(() => { 
+            isPlayingRef.current = false;
+            timeoutsRef.current.delete(timeout1);
+          }, 100);
+          timeoutsRef.current.add(timeout1);
           break;
         }
 
@@ -80,7 +85,11 @@ export function useSounds() {
           oscillator.start(now);
           oscillator.stop(now + 0.08);
           
-          setTimeout(() => { isPlayingRef.current = false; }, 100);
+          const timeout2 = setTimeout(() => { 
+            isPlayingRef.current = false;
+            timeoutsRef.current.delete(timeout2);
+          }, 100);
+          timeoutsRef.current.add(timeout2);
           break;
         }
 
@@ -106,7 +115,11 @@ export function useSounds() {
           oscillator1.stop(now + 0.4);
           oscillator2.stop(now + 0.4);
           
-          setTimeout(() => { isPlayingRef.current = false; }, 450);
+          const timeout3 = setTimeout(() => { 
+            isPlayingRef.current = false;
+            timeoutsRef.current.delete(timeout3);
+          }, 450);
+          timeoutsRef.current.add(timeout3);
           break;
         }
 
@@ -127,7 +140,11 @@ export function useSounds() {
           oscillator.start(now);
           oscillator.stop(now + 0.3);
           
-          setTimeout(() => { isPlayingRef.current = false; }, 350);
+          const timeout4 = setTimeout(() => { 
+            isPlayingRef.current = false;
+            timeoutsRef.current.delete(timeout4);
+          }, 350);
+          timeoutsRef.current.add(timeout4);
           break;
         }
 
@@ -148,7 +165,11 @@ export function useSounds() {
           oscillator.start(now);
           oscillator.stop(now + 0.25);
           
-          setTimeout(() => { isPlayingRef.current = false; }, 300);
+          const timeout5 = setTimeout(() => { 
+            isPlayingRef.current = false;
+            timeoutsRef.current.delete(timeout5);
+          }, 300);
+          timeoutsRef.current.add(timeout5);
           break;
         }
       }
@@ -261,6 +282,11 @@ export function useSounds() {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
+      // Clear all pending timeouts
+      timeoutsRef.current.forEach(timeout => clearTimeout(timeout));
+      timeoutsRef.current.clear();
+      
+      // Clean up ambient audio
       const audio = ambientAudioRef.current;
       if (audio) {
         audio.pause();

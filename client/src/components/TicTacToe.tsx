@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { RotateCcw, Volume2, VolumeX } from "lucide-react";
@@ -131,10 +131,10 @@ export default function TicTacToe() {
     return bestMove;
   };
 
-  const makeComputerMove = (currentBoard: Board) => {
+  const makeComputerMove = useCallback((currentBoard: Board) => {
     setIsComputerThinking(true);
     
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       let move: number;
       
       // 40% chance to make a random move (easier difficulty)
@@ -177,13 +177,16 @@ export default function TicTacToe() {
       
       setIsComputerThinking(false);
     }, 500);
-  };
+    
+    return timeoutId;
+  }, [playSound]);
 
   useEffect(() => {
-    if (currentPlayer === COMPUTER && !winner && !isComputerThinking) {
-      makeComputerMove(board);
+    if (currentPlayer === COMPUTER && !winner && !isComputerThinking && gameActive) {
+      const timeoutId = makeComputerMove(board);
+      return () => clearTimeout(timeoutId);
     }
-  }, [currentPlayer, winner]);
+  }, [currentPlayer, winner, isComputerThinking, board, makeComputerMove, gameActive]);
 
   const handleCellClick = (index: number) => {
     if (!gameActive || board[index] || winner || currentPlayer !== PLAYER || isComputerThinking) return;
@@ -289,6 +292,21 @@ export default function TicTacToe() {
     setScores({ player: 0, computer: 0 });
     resetGame();
   };
+
+  // Handle wallet disconnection during game
+  useEffect(() => {
+    if (!isConnected && (gameActive || isPendingPayment)) {
+      // Reset game state if wallet disconnects during play
+      resetGame();
+      setIsPendingPayment(false);
+      stopAmbient();
+      toast({
+        title: "Wallet Disconnected",
+        description: "Your game has been reset.",
+        variant: "destructive",
+      });
+    }
+  }, [isConnected, gameActive, isPendingPayment, stopAmbient, toast]);
 
   // Auto-dismiss splash screen after 4 seconds
   useEffect(() => {
