@@ -9,6 +9,8 @@ import { config } from "./lib/web3";
 import Home from "@/pages/Home";
 import NotFound from "@/pages/not-found";
 import "@rainbow-me/rainbowkit/styles.css";
+import { useEffect } from "react";
+import { sdk } from "@farcaster/miniapp-sdk";
 
 function Router() {
   return (
@@ -20,6 +22,11 @@ function Router() {
 }
 
 function App() {
+  useEffect(() => {
+    // Notify Base App/Farcaster that the mini app is ready to display
+    sdk.actions.ready();
+  }, []);
+
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
