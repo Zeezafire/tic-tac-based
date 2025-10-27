@@ -183,10 +183,9 @@ export default function TicTacToe() {
 
   useEffect(() => {
     if (currentPlayer === COMPUTER && !winner && !isComputerThinking && gameActive) {
-      const timeoutId = makeComputerMove(board);
-      return () => clearTimeout(timeoutId);
+      makeComputerMove(board);
     }
-  }, [currentPlayer, winner, isComputerThinking, board, makeComputerMove, gameActive]);
+  }, [currentPlayer, winner, gameActive, makeComputerMove]);
 
   const handleCellClick = (index: number) => {
     if (!gameActive || board[index] || winner || currentPlayer !== PLAYER || isComputerThinking) return;
