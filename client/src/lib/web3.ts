@@ -1,6 +1,7 @@
 import { createConfig, http } from 'wagmi'
 import { base } from 'wagmi/chains'
 import { getDefaultConfig } from '@rainbow-me/rainbowkit'
+import { farcasterMiniApp } from '@farcaster/miniapp-wagmi-connector'
 
 // Deployed contract address on Base Mainnet
 export const GAME_CONTRACT_ADDRESS = '0x621d9D991b3971bE088d2FC8b6A585eF142411F3' as const
@@ -61,9 +62,11 @@ export async function calculateEthForUSD(usdAmount: number = 0.1): Promise<strin
   return ethAmount.toFixed(18); // Return with full precision
 }
 
-export const config = getDefaultConfig({
-  appName: 'Tic-Tac-Toe Game',
-  projectId: 'YOUR_WALLET_CONNECT_PROJECT_ID', // Get from https://cloud.walletconnect.com
+// Wagmi config with Farcaster mini app support
+export const config = createConfig({
   chains: [base],
-  ssr: false,
+  connectors: [farcasterMiniApp()],
+  transports: {
+    [base.id]: http(),
+  },
 })
