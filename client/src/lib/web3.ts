@@ -1,6 +1,6 @@
 import { createConfig, http } from 'wagmi'
 import { base } from 'wagmi/chains'
-import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors'
+import { getDefaultConfig } from '@rainbow-me/rainbowkit'
 import { farcasterMiniApp } from '@farcaster/miniapp-wagmi-connector'
 
 // Deployed contract address on Base Mainnet
@@ -62,16 +62,10 @@ export async function calculateEthForUSD(usdAmount: number = 0.1): Promise<strin
   return ethAmount.toFixed(18); // Return with full precision
 }
 
-// Wagmi config with both RainbowKit wallets AND Farcaster mini app support
-export const config = createConfig({
+// Get default RainbowKit config with all wallet connectors (MetaMask, Coinbase Wallet, WalletConnect, etc.)
+export const config = getDefaultConfig({
+  appName: 'Tic Tac Based',
+  projectId: '2c9f2f8e8f8f8f8f8f8f8f8f8f8f8f8f', // Placeholder WalletConnect project ID
   chains: [base],
-  connectors: [
-    farcasterMiniApp(), // For Farcaster/Base App
-    injected(), // For MetaMask, Rainbow, etc.
-    coinbaseWallet({ appName: 'Tic Tac Based' }), // For Coinbase Wallet
-    walletConnect({ projectId: 'YOUR_WALLET_CONNECT_PROJECT_ID' }), // For WalletConnect
-  ],
-  transports: {
-    [base.id]: http(),
-  },
-})
+  ssr: false,
+});
