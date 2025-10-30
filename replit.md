@@ -24,9 +24,14 @@ Preferred communication style: Simple, everyday language.
 
 **Web3 Integration**: 
 - Wagmi for Ethereum interactions and wallet management
-- RainbowKit for wallet connection UI
+- RainbowKit for wallet connection UI and standard wallet support (MetaMask, Coinbase Wallet, WalletConnect)
+- Farcaster Mini App connector (@farcaster/miniapp-wagmi-connector) for Base App/Farcaster wallet integration
 - Viem for Ethereum utilities and type-safe contract interactions
 - Configured for Base Mainnet (Chain ID: 8453)
+- **Dual Wallet Strategy**: 
+  - Auto-connects Farcaster wallet when accessed via Base App or Farcaster
+  - Provides standard wallet options (MetaMask, Coinbase, WalletConnect) for external mobile/desktop access
+  - Graceful fallback ensures non-Farcaster users can connect normally
 
 **Audio System**: 
 - Web Audio API for generating synthetic sound effects
@@ -133,6 +138,8 @@ Preferred communication style: Simple, everyday language.
 - **@rainbow-me/rainbowkit**: Wallet connection UI and management (v2.2.9)
 - **wagmi**: React hooks for Ethereum interactions (v2+)
 - **viem**: TypeScript Ethereum utilities
+- **@farcaster/miniapp-sdk**: Farcaster Mini App integration SDK
+- **@farcaster/miniapp-wagmi-connector**: Wagmi connector for Farcaster Mini App wallet support
 
 ### Data & State Management
 
