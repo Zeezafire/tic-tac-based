@@ -137,8 +137,8 @@ export default function TicTacToe() {
     const timeoutId = setTimeout(() => {
       let move: number;
       
-      // 40% chance to make a random move (balanced difficulty - 60% optimal play)
-      if (Math.random() < 0.4) {
+      // 20% chance to make a random move (challenging difficulty - 80% optimal play)
+      if (Math.random() < 0.2) {
         const availableMoves = currentBoard
           .map((cell, index) => (cell === null ? index : -1))
           .filter((index) => index !== -1);
