@@ -10,15 +10,20 @@ export default function WalletConnect() {
 
   // Auto-connect for Farcaster/Base App users
   useEffect(() => {
-    // Check if we're in Farcaster Mini App context
-    if (sdk.context && !isConnected) {
+    const attemptFarcasterConnect = async () => {
       try {
-        // Attempt to connect with Farcaster connector
-        connect({ connector: farcasterMiniApp() });
+        // Check if we're in Farcaster Mini App context
+        const context = await sdk.context;
+        if (context && !isConnected) {
+          // Attempt to connect with Farcaster connector
+          connect({ connector: farcasterMiniApp() });
+        }
       } catch (error) {
-        console.error("Failed to auto-connect Farcaster wallet:", error);
+        // Not in Farcaster context, silently ignore
       }
-    }
+    };
+    
+    attemptFarcasterConnect();
   }, [connect, isConnected]);
 
   return (
